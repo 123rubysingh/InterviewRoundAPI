@@ -14,7 +14,6 @@ mongoose.connect("mongodb://localhost:27017/interviewTest", {useNewUrlParser: tr
 //-----------------------------candidate Schema-------------------------------------------------////////
 const candidateSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
-     candidateId: {type: Number},
      name: {type: String},
      emailAddress: {type: String},
      firstRound : {type: Number},
@@ -48,13 +47,12 @@ app.route("/candidate")
    {
      const newCandidate = new Candidate({
         _id:new mongoose.Types.ObjectId(),
-        candidateId:req.body.candidateId,
         name:req.body.name,
         emailAddress:req.body.emailAddress,
         firstRound : req.body.firstRound ,
-     secondRound : req.body.secondRound,
-     thirdRound : req.body.thirdRound,
-     averageScore : req.body.averageScore
+        secondRound : req.body.secondRound,
+        thirdRound : req.body.thirdRound,
+        averageScore : req.body.averageScore
         
 
      });
@@ -73,7 +71,11 @@ app.route("/candidate")
 app.route("/averageScore")
 .get(function(req, res){
 
-    Candidate.aggregate([{ $group : { _id:"$id", average_Score_firstRound : { $avg: "$firstRound" },average_Score_secondRound : { $avg: "$secondRound" }, average_Score_thirdRound : { $avg: "$thirdRound" }}}],
+    Candidate.aggregate([{ $group : {
+       _id:"$id", 
+       average_Score_firstRound : { $avg: "$firstRound" },
+       average_Score_secondRound : { $avg: "$secondRound" }, 
+       average_Score_thirdRound : { $avg: "$thirdRound" }}}],
     
    function(err, found){
 
@@ -90,7 +92,11 @@ app.route("/averageScore")
 app.route("/highestScore")
 .get(function(req, res){
 
-    Candidate.aggregate([{$group : { _id:"$id", highestScore: { $max : { $sum: ["$firstRound","$secondRound","$thirdRound"]} },}}
+    Candidate.aggregate([{$group : { 
+      _id:null, 
+      highestScore: { $max : { $sum: ["$firstRound","$secondRound","$thirdRound"]} },
+      
+    }}
 
 ],
     
@@ -110,7 +116,12 @@ app.route("/highestScore")
 app.route("/totalscoreallCandidate")
 .get(function(req, res){
 
-    Candidate.aggregate([{ $project:  { name:"$name", emailAddress:"$emailAddress", totalScore: { $max : { $sum: ["$firstRound","$secondRound","$thirdRound"]} },}}
+    Candidate.aggregate([{ $project:  {
+       name:"$name",
+       emailAddress:"$emailAddress",
+       totalScore: { $max : { $sum: ["$firstRound","$secondRound","$thirdRound"]} },
+      averageScore:{$max : { $avg: ["$firstRound","$secondRound","$thirdRound"]}}
+      }}
 ],
     
    function(err, found){
