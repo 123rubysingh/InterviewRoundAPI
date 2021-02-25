@@ -51,9 +51,7 @@ app.route("/candidate")
         emailAddress:req.body.emailAddress,
         firstRound : req.body.firstRound ,
         secondRound : req.body.secondRound,
-        thirdRound : req.body.thirdRound,
-        averageScore : req.body.averageScore
-        
+        thirdRound : req.body.thirdRound,  
 
      });
      newCandidate.save(function(err){
