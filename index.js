@@ -19,7 +19,7 @@ const candidateSchema = new Schema({
      firstRound : {type: Number},
      secondRound : {type: Number},
      thirdRound : {type: Number},
-     averageScore : {type: Number}
+     
 }
     ,
     { collection: 'candidates' }
